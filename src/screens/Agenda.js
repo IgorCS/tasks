@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, FlatList, ImageBackground, Platform, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, FlatList, ImageBackground, Platform, TouchableOpacity, AsyncStorage} from 'react-native'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 import todayImage from '../../assets/imgs/today.jpg'
@@ -12,33 +12,7 @@ import AddTask from './AddTask'
 
 export default class Agenda extends Component{
     state = {
-        tasks: [
-            {   
-                id: Math.random(), desc: 'Comprar o Curso_X de REACT NATIVE_1',
-                estimateAt: new Date(), doneAt: new Date() 
-            },  
-            {   
-                id: Math.random(), desc: 'Comprar Curso de REACT NATIVE',
-                estimateAt: new Date(), doneAt: new Date() 
-            },
-            
-            {   
-                id: Math.random(), desc: 'Comprar Curso de REACT NATIVE',
-                estimateAt: new Date(), doneAt: new Date() 
-            },
-            {
-                id: Math.random(), desc: 'Concluir o Curso de REACT NATIVE',
-                estimateAt: new Date(), doneAt: null
-            },
-            {
-                id: Math.random(), desc: 'Concluir o Curso de REACT NATIVE',
-                estimateAt: new Date(), doneAt: null
-            },
-            {   
-                id: Math.random(), desc: 'Comprar o Curso_A de REACT NATIVE',
-                estimateAt: new Date(), doneAt: new Date() 
-            },            
-        ],
+        tasks: [],
         visibleTasks: [],
         showDoneTasks: true,
         showAddTask: false,
@@ -65,6 +39,7 @@ export default class Agenda extends Component{
             visibleTasks=this.state.tasks.filter(pending)
         }
         this.setState({visibleTasks})
+        AsyncStorage.setItem('tasks', JSON.stringify(this.state.tasks))
     }
 
     toggleFilter=()=>{
@@ -73,8 +48,11 @@ export default class Agenda extends Component{
         this.filterTasks
     )}
 
-    componentDidMount=()=>{
-        this.filterTasks()
+    componentDidMount= async ()=>{
+        const data=await AsyncStorage.getItem('tasks')
+        const tasks = JSON.parse(data) || []
+        this.setState({tasks},this.filterTasks)
+        
     }
 
     toggleTask = id => {
