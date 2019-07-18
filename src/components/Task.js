@@ -39,7 +39,7 @@ export default props => {
         <TouchableOpacity
             style={[styles.exclude, { justifyContent: 'flex-start', paddingLeft: 20 }]}
             onPress={() => props.onDelete(props.id)}>
-            <Icon name='trash' size={30} color='#FFF' />
+            <Icon name='trash' size={25} color='#FFF' />
         </TouchableOpacity>,
     ]
     
